@@ -1,41 +1,40 @@
-import { createSignal, createEffect, For, onMount, Show, mergeProps, on, createMemo } from 'solid-js';
-import { v4 as uuidv4 } from 'uuid';
-import {
-  sendMessageQuery,
-  upsertVectorStoreWithFormData,
-  isStreamAvailableQuery,
-  IncomingInput,
-  getChatbotConfig,
-  FeedbackRatingType,
-  createAttachmentWithFormData,
-} from '@/queries/sendMessageQuery';
-import { TextInput } from './inputs/textInput';
-import { GuestBubble } from './bubbles/GuestBubble';
-import { BotBubble } from './bubbles/BotBubble';
-import { LoadingBubble } from './bubbles/LoadingBubble';
-import { StarterPromptBubble } from './bubbles/StarterPromptBubble';
+import { Avatar } from '@/components/avatars/Avatar';
+import { FollowUpPromptBubble } from '@/components/bubbles/FollowUpPromptBubble';
+import { LeadCaptureBubble } from '@/components/bubbles/LeadCaptureBubble';
+import { DeleteButton, SendButton } from '@/components/buttons/SendButton';
+import { FilePreview } from '@/components/inputs/textInput/components/FilePreview';
 import {
   BotMessageTheme,
+  DateTimeToggleTheme,
+  DisclaimerPopUpTheme,
+  FeedbackTheme,
   FooterTheme,
   TextInputTheme,
   UserMessageTheme,
-  FeedbackTheme,
-  DisclaimerPopUpTheme,
-  DateTimeToggleTheme,
 } from '@/features/bubble/types';
-import { Badge } from './Badge';
-import { Popup, DisclaimerPopup } from '@/features/popup';
-import { Avatar } from '@/components/avatars/Avatar';
-import { DeleteButton, SendButton } from '@/components/buttons/SendButton';
-import { FilePreview } from '@/components/inputs/textInput/components/FilePreview';
-import { CircleDotIcon, SparklesIcon, TrashIcon } from './icons';
-import { CancelButton } from './buttons/CancelButton';
+import { DisclaimerPopup, Popup } from '@/features/popup';
+import {
+  FeedbackRatingType,
+  IncomingInput,
+  createAttachmentWithFormData,
+  getChatbotConfig,
+  isStreamAvailableQuery,
+  sendMessageQuery,
+  upsertVectorStoreWithFormData,
+} from '@/queries/sendMessageQuery';
+import { getCookie, getLocalStorageChatflow, removeLocalStorageChatHistory, setCookie, setLocalStorageChatflow } from '@/utils';
 import { cancelAudioRecording, startAudioRecording, stopAudioRecording } from '@/utils/audioRecording';
-import { LeadCaptureBubble } from '@/components/bubbles/LeadCaptureBubble';
-import { removeLocalStorageChatHistory, getLocalStorageChatflow, setLocalStorageChatflow, setCookie, getCookie } from '@/utils';
+import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source';
 import { cloneDeep } from 'lodash';
-import { FollowUpPromptBubble } from '@/components/bubbles/FollowUpPromptBubble';
-import { fetchEventSource, EventStreamContentType } from '@microsoft/fetch-event-source';
+import { For, Show, createEffect, createMemo, createSignal, mergeProps, on, onMount } from 'solid-js';
+import { v4 as uuidv4 } from 'uuid';
+import { BotBubble } from './bubbles/BotBubble';
+import { GuestBubble } from './bubbles/GuestBubble';
+import { LoadingBubble } from './bubbles/LoadingBubble';
+import { StarterPromptBubble } from './bubbles/StarterPromptBubble';
+import { CancelButton } from './buttons/CancelButton';
+import { CircleDotIcon, SparklesIcon, TrashIcon } from './icons';
+import { TextInput } from './inputs/textInput';
 
 export type FileEvent<T = EventTarget> = {
   target: T;
@@ -1608,12 +1607,12 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
               />
             )}
           </div>
-          <Badge
+          {/* <Badge
             footer={props.footer}
             badgeBackgroundColor={props.badgeBackgroundColor}
             poweredByTextColor={props.poweredByTextColor}
             botContainer={botContainer}
-          />
+          /> */}
         </div>
       </div>
       {sourcePopupOpen() && <Popup isOpen={sourcePopupOpen()} value={sourcePopupSrc()} onClose={() => setSourcePopupOpen(false)} />}
